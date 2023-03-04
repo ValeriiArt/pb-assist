@@ -9,15 +9,18 @@ import Swiper from "react-native-swiper";
 import PlayScreen from "./screens/PlayScreen";
 import TrainingScreen from "./screens/TrainingScreen";
 import VoiceAssistantScreen from "./screens/VoiceAssistantScreen";
+import { useState } from "react";
 
 export default function App() {
   // const { width, height } = Dimensions.get("window");
+  const [test, setTest] = useState(true);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       <Swiper
+        scrollEnabled={test}
         style={styles.wrapper}
         dot={
           <View
@@ -49,7 +52,7 @@ export default function App() {
         loop={false}
       >
         <View style={styles.slide}>
-          <TrainingScreen />
+          <TrainingScreen setTest={setTest} test={test} />
         </View>
         <View style={styles.slide}>
           <PlayScreen />
