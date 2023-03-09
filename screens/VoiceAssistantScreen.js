@@ -1,11 +1,49 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import { Button } from "../components/Button/Button";
-import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Slider } from "@miblanchard/react-native-slider";
+import { useState } from "react";
 
-export default function VoiceAssistantScreen() {
+export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
+  const [exerciseBtn, setExerciseBtn] = useState(false);
+  const [repeatBtn, setRepeatBtn] = useState(false);
+
+  const [exercise, setExercise] = useState(0);
+  const [repeat, setRepeat] = useState(0);
+
   const handleClick = () => {
     return console.log("click btn");
   };
+
+  const onPressRepeat = () => {
+    setRepeatBtn(!repeatBtn);
+    setBlockSwiper(!blockSwiper);
+  };
+
+  const onPressExercise = () => {
+    setExerciseBtn(!exerciseBtn);
+    setBlockSwiper(!blockSwiper);
+  };
+
+  const valueExercise = (e) => {
+    setExercise(e);
+  };
+
+  const valueRepeat = (e) => {
+    setRepeat(e);
+  };
+
+  const TrackMarkExercise = () => (
+    <View style={componentThumbStyles.container}>
+      <Text style={componentThumbStyles.text}>{exercise}</Text>
+    </View>
+  );
+
+  const TrackMarkRepeat = () => (
+    <View style={{}}>
+      <Text style={componentThumbStyles.text}>{repeat}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -16,32 +54,60 @@ export default function VoiceAssistantScreen() {
         <View style={styles.counter}>
           <Text style={styles.counterText}>39s</Text>
         </View>
+
         <View style={styles.settings}>
-          <View style={styles.titleCounter}>
-            <Text style={styles.titleCounter}>Time for exercise</Text>
-          </View>
-          <View style={styles.counterSettings}>
-            <Text style={styles.counterSettings}>39s</Text>
-          </View>
-          <Pressable
-            style={styles.iconBtn}
-            onPress={() => console.log("click time for exercise")}
-          >
+          {!exerciseBtn ? (
+            <>
+              <View style={styles.titleCounter}>
+                <Text style={styles.titleCounter}>Time for exercise</Text>
+              </View>
+              <View style={styles.counterSettings}>
+                <Text style={styles.counterSettings}>{exercise}s</Text>
+              </View>
+            </>
+          ) : (
+            <Slider
+              containerStyle={componentThumbStyles.container}
+              value={exercise}
+              onValueChange={valueExercise}
+              animateTransitions
+              renderThumbComponent={() => {}}
+              renderTrackMarkComponent={TrackMarkExercise}
+              trackStyle={customStyles.track}
+              maximumValue={120}
+              step={1}
+            />
+          )}
+
+          <Pressable style={styles.iconBtn} onPress={onPressExercise}>
             <Ionicons name="ios-timer-outline" size={24} color="black" />
           </Pressable>
         </View>
 
         <View style={styles.settings}>
-          <View style={styles.titleCounter}>
-            <Text style={styles.titleCounter}>Repeat</Text>
-          </View>
-          <View style={styles.counterSettings}>
-            <Text style={styles.counterSettings}>13</Text>
-          </View>
-          <Pressable
-            style={styles.iconBtn}
-            onPress={() => console.log("click repeat")}
-          >
+          {!repeatBtn ? (
+            <>
+              <View style={styles.titleCounter}>
+                <Text style={styles.titleCounter}>Repeat</Text>
+              </View>
+              <View style={styles.counterSettings}>
+                <Text style={styles.counterSettings}>{repeat}</Text>
+              </View>
+            </>
+          ) : (
+            <Slider
+              containerStyle={componentThumbStyles.container}
+              value={repeat}
+              onValueChange={valueRepeat}
+              animateTransitions
+              renderThumbComponent={() => {}}
+              renderTrackMarkComponent={TrackMarkRepeat}
+              trackStyle={customStyles.track}
+              maximumValue={13}
+              step={1}
+            />
+          )}
+          <Pressable style={styles.iconBtn} onPress={onPressRepeat}>
             <Entypo name="back-in-time" size={24} color="black" />
           </Pressable>
         </View>
@@ -98,5 +164,22 @@ const styles = StyleSheet.create({
   startBtnContainer: {
     flex: 1,
     justifyContent: "flex-end",
+  },
+});
+
+const componentThumbStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    height: 34,
+  },
+  text: {
+    color: "#fff",
+  },
+});
+const customStyles = StyleSheet.create({
+  track: {
+    borderRadius: 10,
+    height: 34,
   },
 });

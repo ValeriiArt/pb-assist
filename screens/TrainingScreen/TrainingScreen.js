@@ -1,44 +1,82 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { Button } from "../components/Button/Button";
+import { Text, View, Pressable } from "react-native";
+import { Button } from "../../components/Button/Button";
 import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Slider } from "@miblanchard/react-native-slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function TrainingScreen({ setTest, test }) {
+import {
+  styles,
+  componentThumbStyles,
+  customStyles,
+} from "./TrainingScreen.styled";
+
+export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
   const [exerciseBtn, setExerciseBtn] = useState(false);
-  const [pauseBtn, setPauseBtn] = useState(false);
-  const [repeatBtn, setRepeatBtn] = useState(false);
+  const [exerciseTime, setExerciseTime] = useState(0);
 
-  const [exercise, setExercise] = useState(0);
+  const [pauseBtn, setPauseBtn] = useState(false);
   const [pause, setPause] = useState(0);
+
+  const [repeatBtn, setRepeatBtn] = useState(false);
   const [repeat, setRepeat] = useState(0);
 
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const repeatCounter = () => {
+    if (repeat > 0) {
+      setTime(exerciseTime);
+      setRepeat(repeat - 1);
+    } else {
+      reset();
+    }
+  };
+
+  useEffect(() => {
+    if (time > 0 && repeat > 0) {
+      const timer = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+    repeatCounter();
+  }, [time]);
+
   const handleClick = () => {
-    return console.log("click btn");
+    if (exerciseTime && repeat) {
+      setIsRunning((isRunning) => !isRunning);
+    }
+    if (!isRunning) {
+      setTime(exerciseTime);
+    } else {
+      reset();
+    }
+  };
+
+  const reset = () => {
+    setExerciseTime(0);
+    setTime(0);
+    setRepeat(0);
+    setIsRunning(false);
   };
 
   const onPressExercise = () => {
     setExerciseBtn(!exerciseBtn);
-    setTest(!test);
-    // setPauseBtn(!pauseBtn);
-    // setRepeatBtn(!repeatBtn);
+    setBlockSwiper(!blockSwiper);
   };
   const onPressPause = () => {
     setPauseBtn(!pauseBtn);
-    setTest(!test);
-    // setExerciseBtn(!exerciseBtn);
-    // setRepeatBtn(!repeatBtn);
+    setBlockSwiper(!blockSwiper);
   };
   const onPressRepeat = () => {
     setRepeatBtn(!repeatBtn);
-    setTest(!test);
-    // setPauseBtn(!pauseBtn);
-    // setExerciseBtn(!exerciseBtn);
+    setBlockSwiper(!blockSwiper);
   };
 
   const valueExercise = (e) => {
-    setExercise(e);
+    setExerciseTime(e);
   };
+
   const valuePause = (e) => {
     setPause(e);
   };
@@ -46,19 +84,21 @@ export default function TrainingScreen({ setTest, test }) {
     setRepeat(e);
   };
 
+  const TrackMarkExercise = () => (
+    <View style={componentThumbStyles.container}>
+      <Text style={componentThumbStyles.text}>{exerciseTime}</Text>
+    </View>
+  );
+
   const TrackMarkRepeat = () => (
     <View style={{}}>
       <Text style={componentThumbStyles.text}>{repeat}</Text>
     </View>
   );
+
   const TrackMarkPause = () => (
     <View style={componentThumbStyles.container}>
       <Text style={componentThumbStyles.text}>{pause}</Text>
-    </View>
-  );
-  const TrackMarkExercise = () => (
-    <View style={componentThumbStyles.container}>
-      <Text style={componentThumbStyles.text}>{exercise}</Text>
     </View>
   );
   return (
@@ -68,7 +108,7 @@ export default function TrainingScreen({ setTest, test }) {
       </View>
       <View style={styles.main}>
         <View style={styles.counter}>
-          <Text style={styles.counterText}>39s</Text>
+          <Text style={styles.counterText}>{time}s</Text>
         </View>
 
         <View style={styles.settings}>
@@ -78,13 +118,13 @@ export default function TrainingScreen({ setTest, test }) {
                 <Text style={styles.titleCounter}>Time for exercise</Text>
               </View>
               <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{exercise}s</Text>
+                <Text style={styles.counterSettings}>{exerciseTime}s</Text>
               </View>
             </>
           ) : (
             <Slider
               containerStyle={componentThumbStyles.container}
-              value={exercise}
+              value={exerciseTime}
               onValueChange={valueExercise}
               animateTransitions
               renderThumbComponent={() => {}}
@@ -157,73 +197,11 @@ export default function TrainingScreen({ setTest, test }) {
         </View>
       </View>
       <View style={styles.startBtnContainer}>
-        <Button label="START" handleClick={handleClick} />
+        <Button
+          label={isRunning ? "STOP" : "START"}
+          handleClick={handleClick}
+        />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 30,
-  },
-  headerContainer: {
-    marginTop: 80,
-  },
-  title: {
-    fontSize: 36,
-  },
-  main: {
-    width: "100%",
-    marginTop: 30,
-  },
-  counterText: {
-    textAlign: "center",
-    fontSize: 42,
-    fontWeight: 700,
-  },
-  settings: {
-    justifyContent: "space-between",
-    // alignItems: "center",
-    flexDirection: "row",
-    marginTop: 30,
-  },
-  titleCounter: {
-    flex: 1,
-  },
-  counterSettings: {
-    flex: 1,
-  },
-  iconBtn: {
-    width: 34,
-    height: 34,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    backgroundColor: "#c0c0c0",
-  },
-
-  startBtnContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-});
-
-const componentThumbStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    height: 34,
-  },
-  text: {
-    color: "#fff",
-  },
-});
-const customStyles = StyleSheet.create({
-  track: {
-    borderRadius: 10,
-    height: 34,
-  },
-});

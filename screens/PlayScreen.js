@@ -1,11 +1,52 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import { Button } from "../components/Button/Button";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import { Slider } from "@miblanchard/react-native-slider";
+import { useState, useEffect } from "react";
 
-export default function PlayScreen() {
+export default function PlayScreen({ setBlockSwiper, blockSwiper }) {
+  const [pauseBtn, setPauseBtn] = useState(false);
+  const [pause, setPause] = useState(0);
+
+  const [timePlayBtn, setTimePlayBtn] = useState(false);
+  const [timePlay, setTimePlay] = useState(0);
+
+  const [time, setTime] = useState(0);
+  // const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {}, [time]);
+
   const handleClick = () => {
-    return console.log("click btn");
+    setTime(timePlay);
   };
+
+  const valueTimePlay = (e) => {
+    setTimePlay(e);
+  };
+  const onPressTimePlay = () => {
+    setTimePlayBtn(!timePlayBtn);
+    setBlockSwiper(!blockSwiper);
+  };
+
+  const TrackMarkTimePlay = () => (
+    <View style={componentThumbStyles.container}>
+      <Text style={componentThumbStyles.text}>{timePlay}</Text>
+    </View>
+  );
+
+  const TrackMarkPause = () => (
+    <View style={componentThumbStyles.container}>
+      <Text style={componentThumbStyles.text}>{pause}</Text>
+    </View>
+  );
+  const onPressPause = () => {
+    setPauseBtn(!pauseBtn);
+    setBlockSwiper(!blockSwiper);
+  };
+  const valuePause = (e) => {
+    setPause(e);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -13,38 +54,64 @@ export default function PlayScreen() {
       </View>
       <View style={styles.main}>
         <View style={styles.counter}>
-          <Text style={styles.counterText}>30s</Text>
+          <Text style={styles.counterText}>{time}s</Text>
         </View>
+
         <View style={styles.settings}>
-          <View style={styles.titleCounter}>
-            <Text style={styles.titleCounter}>Pause time</Text>
-          </View>
-          <View style={styles.counterSettings}>
-            <Text style={styles.counterSettings}>30s</Text>
-          </View>
-          <Pressable
-            style={styles.iconBtn}
-            onPress={() => console.log("click pause time")}
-          >
-            <MaterialIcons name="timer" size={24} color="black" />
-          </Pressable>
-        </View>
-        <View style={styles.settings}>
-          <View style={styles.titleCounter}>
-            <Text style={styles.titleCounter}>Time for play</Text>
-          </View>
-          <View style={styles.counterSettings}>
-            <Text style={styles.counterSettings}>0s</Text>
-          </View>
-          <Pressable
-            style={styles.iconBtn}
-            onPress={() => console.log("click time for play")}
-          >
+          {!timePlayBtn ? (
+            <>
+              <View style={styles.titleCounter}>
+                <Text style={styles.titleCounter}>Time for play</Text>
+              </View>
+              <View style={styles.counterSettings}>
+                <Text style={styles.counterSettings}>{timePlay}s</Text>
+              </View>
+            </>
+          ) : (
+            <Slider
+              containerStyle={componentThumbStyles.container}
+              value={timePlay}
+              onValueChange={valueTimePlay}
+              animateTransitions
+              renderThumbComponent={() => {}}
+              renderTrackMarkComponent={TrackMarkTimePlay}
+              trackStyle={customStyles.track}
+              maximumValue={60}
+              step={1}
+            />
+          )}
+          <Pressable style={styles.iconBtn} onPress={onPressTimePlay}>
             <Entypo name="back-in-time" size={24} color="black" />
           </Pressable>
         </View>
-        <View></View>
-        <View></View>
+
+        <View style={styles.settings}>
+          {!pauseBtn ? (
+            <>
+              <View style={styles.titleCounter}>
+                <Text style={styles.titleCounter}>Pause time</Text>
+              </View>
+              <View style={styles.counterSettings}>
+                <Text style={styles.counterSettings}>{pause}s</Text>
+              </View>
+            </>
+          ) : (
+            <Slider
+              containerStyle={componentThumbStyles.container}
+              value={pause}
+              onValueChange={valuePause}
+              animateTransitions
+              renderThumbComponent={() => {}}
+              renderTrackMarkComponent={TrackMarkPause}
+              trackStyle={customStyles.track}
+              maximumValue={60}
+              step={1}
+            />
+          )}
+          <Pressable style={styles.iconBtn} onPress={onPressPause}>
+            <MaterialIcons name="timer" size={24} color="black" />
+          </Pressable>
+        </View>
       </View>
       <View style={styles.startBtnContainer}>
         <Button label="START" handleClick={handleClick} />
@@ -97,5 +164,22 @@ const styles = StyleSheet.create({
   startBtnContainer: {
     flex: 1,
     justifyContent: "flex-end",
+  },
+});
+
+const componentThumbStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    height: 34,
+  },
+  text: {
+    color: "#fff",
+  },
+});
+const customStyles = StyleSheet.create({
+  track: {
+    borderRadius: 10,
+    height: 34,
   },
 });
