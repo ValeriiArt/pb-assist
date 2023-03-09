@@ -7,17 +7,20 @@ import {
 } from "react-native";
 import Swiper from "react-native-swiper";
 import PlayScreen from "./screens/PlayScreen";
-import TrainingScreen from "./screens/TrainingScreen";
+import TrainingScreen from "./screens/TrainingScreen/TrainingScreen";
 import VoiceAssistantScreen from "./screens/VoiceAssistantScreen";
+import { useState } from "react";
 
 export default function App() {
   // const { width, height } = Dimensions.get("window");
+  const [blockSwiper, setBlockSwiper] = useState(true);
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       <Swiper
+        scrollEnabled={blockSwiper}
         style={styles.wrapper}
         dot={
           <View
@@ -49,13 +52,22 @@ export default function App() {
         loop={false}
       >
         <View style={styles.slide}>
-          <TrainingScreen />
+          <TrainingScreen
+            setBlockSwiper={setBlockSwiper}
+            blockSwiper={blockSwiper}
+          />
         </View>
         <View style={styles.slide}>
-          <PlayScreen />
+          <PlayScreen
+            setBlockSwiper={setBlockSwiper}
+            blockSwiper={blockSwiper}
+          />
         </View>
         <View style={styles.slide}>
-          <VoiceAssistantScreen />
+          <VoiceAssistantScreen
+            setBlockSwiper={setBlockSwiper}
+            blockSwiper={blockSwiper}
+          />
         </View>
       </Swiper>
     </View>

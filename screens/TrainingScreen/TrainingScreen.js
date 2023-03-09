@@ -1,14 +1,17 @@
+import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
-import { Ionicons, Entypo } from "@expo/vector-icons";
-import { Layer } from "../components/Layer";
-import { Settings } from "../components/common/Settings";
-import { TrackMark } from "../components/common/TrackMark";
+import { Settings } from "../../components/common/Settings";
+import { TrackMark } from "../../components/common/TrackMark";
+import { Layer } from "../../components/Layer";
 
-export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
+export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
   const [exerciseBtn, setExerciseBtn] = useState(false);
-  const [repeatBtn, setRepeatBtn] = useState(false);
-
   const [exerciseTime, setExerciseTime] = useState(0);
+
+  const [pauseBtn, setPauseBtn] = useState(false);
+  const [pause, setPause] = useState(0);
+
+  const [repeatBtn, setRepeatBtn] = useState(false);
   const [repeat, setRepeat] = useState(0);
 
   const [time, setTime] = useState(0);
@@ -55,7 +58,10 @@ export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
     setExerciseBtn(!exerciseBtn);
     setBlockSwiper(!blockSwiper);
   };
-
+  const onPressPause = () => {
+    setPauseBtn(!pauseBtn);
+    setBlockSwiper(!blockSwiper);
+  };
   const onPressRepeat = () => {
     setRepeatBtn(!repeatBtn);
     setBlockSwiper(!blockSwiper);
@@ -66,7 +72,7 @@ export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
       handleClick={handleClick}
       isRunning={isRunning}
       time={time}
-      titleLayer={"Voice Assistant"}
+      titleLayer={"Training"}
     >
       {
         <>
@@ -81,6 +87,20 @@ export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
             onPressSettings={onPressExercise}
             iconSettings={
               <Ionicons name="ios-timer-outline" size={24} color="black" />
+            }
+          />
+
+          <Settings
+            stateBtn={!pauseBtn}
+            titleCounter={"Time for pause"}
+            counterValue={pause}
+            sliderChangeValue={setPause}
+            sliderTrackMark={() => <TrackMark>{pause}</TrackMark>}
+            sliderMaxValue={12}
+            sliderStep={1}
+            onPressSettings={onPressPause}
+            iconSettings={
+              <MaterialIcons name="timer" size={24} color="black" />
             }
           />
 
