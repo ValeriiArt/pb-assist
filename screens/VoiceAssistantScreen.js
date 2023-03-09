@@ -1,23 +1,54 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import { Button } from "../components/Button/Button";
+import { useState, useEffect } from "react";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import { Slider } from "@miblanchard/react-native-slider";
-import { useState } from "react";
+import { Layer } from "../components/Layer";
+import { Settings } from "../components/common/Settings";
+import { TrackMark } from "../components/common/TrackMark";
 
 export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
   const [exerciseBtn, setExerciseBtn] = useState(false);
   const [repeatBtn, setRepeatBtn] = useState(false);
 
-  const [exercise, setExercise] = useState(0);
+  const [exerciseTime, setExerciseTime] = useState(0);
   const [repeat, setRepeat] = useState(0);
 
-  const handleClick = () => {
-    return console.log("click btn");
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const repeatCounter = () => {
+    if (repeat > 0) {
+      setTime(exerciseTime);
+      setRepeat(repeat - 1);
+    } else {
+      reset();
+    }
   };
 
-  const onPressRepeat = () => {
-    setRepeatBtn(!repeatBtn);
-    setBlockSwiper(!blockSwiper);
+  useEffect(() => {
+    if (time > 0 && repeat > 0) {
+      const timer = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+    repeatCounter();
+  }, [time]);
+
+  const handleClick = () => {
+    if (exerciseTime && repeat) {
+      setIsRunning((isRunning) => !isRunning);
+    }
+    if (!isRunning) {
+      setTime(exerciseTime);
+    } else {
+      reset();
+    }
+  };
+
+  const reset = () => {
+    setExerciseTime(0);
+    setTime(0);
+    setRepeat(0);
+    setIsRunning(false);
   };
 
   const onPressExercise = () => {
@@ -25,161 +56,49 @@ export default function VoiceAssistantScreen({ setBlockSwiper, blockSwiper }) {
     setBlockSwiper(!blockSwiper);
   };
 
-  const valueExercise = (e) => {
-    setExercise(e);
+  const onPressRepeat = () => {
+    setRepeatBtn(!repeatBtn);
+    setBlockSwiper(!blockSwiper);
   };
-
-  const valueRepeat = (e) => {
-    setRepeat(e);
-  };
-
-  const TrackMarkExercise = () => (
-    <View style={componentThumbStyles.container}>
-      <Text style={componentThumbStyles.text}>{exercise}</Text>
-    </View>
-  );
-
-  const TrackMarkRepeat = () => (
-    <View style={{}}>
-      <Text style={componentThumbStyles.text}>{repeat}</Text>
-    </View>
-  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Voice Assistant</Text>
-      </View>
-      <View style={styles.main}>
-        <View style={styles.counter}>
-          <Text style={styles.counterText}>39s</Text>
-        </View>
+    <Layer
+      handleClick={handleClick}
+      isRunning={isRunning}
+      time={time}
+      titleLayer={"Voice Assistant"}
+    >
+      {
+        <>
+          <Settings
+            stateBtn={!exerciseBtn}
+            titleCounter={"Time for exercise"}
+            counterValue={exerciseTime}
+            sliderChangeValue={setExerciseTime}
+            sliderTrackMark={() => <TrackMark>{exerciseTime}</TrackMark>}
+            sliderMaxValue={120}
+            sliderStep={1}
+            onPressSettings={onPressExercise}
+            iconSettings={
+              <Ionicons name="ios-timer-outline" size={24} color="black" />
+            }
+          />
 
-        <View style={styles.settings}>
-          {!exerciseBtn ? (
-            <>
-              <View style={styles.titleCounter}>
-                <Text style={styles.titleCounter}>Time for exercise</Text>
-              </View>
-              <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{exercise}s</Text>
-              </View>
-            </>
-          ) : (
-            <Slider
-              containerStyle={componentThumbStyles.container}
-              value={exercise}
-              onValueChange={valueExercise}
-              animateTransitions
-              renderThumbComponent={() => {}}
-              renderTrackMarkComponent={TrackMarkExercise}
-              trackStyle={customStyles.track}
-              maximumValue={120}
-              step={1}
-            />
-          )}
-
-          <Pressable style={styles.iconBtn} onPress={onPressExercise}>
-            <Ionicons name="ios-timer-outline" size={24} color="black" />
-          </Pressable>
-        </View>
-
-        <View style={styles.settings}>
-          {!repeatBtn ? (
-            <>
-              <View style={styles.titleCounter}>
-                <Text style={styles.titleCounter}>Repeat</Text>
-              </View>
-              <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{repeat}</Text>
-              </View>
-            </>
-          ) : (
-            <Slider
-              containerStyle={componentThumbStyles.container}
-              value={repeat}
-              onValueChange={valueRepeat}
-              animateTransitions
-              renderThumbComponent={() => {}}
-              renderTrackMarkComponent={TrackMarkRepeat}
-              trackStyle={customStyles.track}
-              maximumValue={13}
-              step={1}
-            />
-          )}
-          <Pressable style={styles.iconBtn} onPress={onPressRepeat}>
-            <Entypo name="back-in-time" size={24} color="black" />
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.startBtnContainer}>
-        <Button label="START" handleClick={handleClick} />
-      </View>
-    </View>
+          <Settings
+            stateBtn={!repeatBtn}
+            titleCounter={"Repeat"}
+            counterValue={repeat}
+            sliderChangeValue={setRepeat}
+            sliderTrackMark={() => <TrackMark>{repeat}</TrackMark>}
+            sliderMaxValue={12}
+            sliderStep={1}
+            onPressSettings={onPressRepeat}
+            iconSettings={
+              <Entypo name="back-in-time" size={24} color="black" />
+            }
+          />
+        </>
+      }
+    </Layer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    marginTop: 80,
-  },
-  title: {
-    fontSize: 36,
-  },
-  main: {
-    width: "100%",
-    marginTop: 30,
-  },
-  counterText: {
-    textAlign: "center",
-    fontSize: 42,
-    fontWeight: 700,
-  },
-  settings: {
-    // justifyContent: "space-between",
-    flexDirection: "row",
-    marginTop: 30,
-  },
-  titleCounter: {
-    flex: 1,
-  },
-  counterSettings: {
-    flex: 1,
-  },
-  iconBtn: {
-    // flex: 1,
-    width: 34,
-    height: 34,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    backgroundColor: "#c0c0c0",
-  },
-
-  startBtnContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-});
-
-const componentThumbStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    height: 34,
-  },
-  text: {
-    color: "#fff",
-  },
-});
-const customStyles = StyleSheet.create({
-  track: {
-    borderRadius: 10,
-    height: 34,
-  },
-});

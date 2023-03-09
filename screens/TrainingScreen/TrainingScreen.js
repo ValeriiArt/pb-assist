@@ -1,14 +1,8 @@
-import { Text, View, Pressable } from "react-native";
-import { Button } from "../../components/Button/Button";
 import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
-import { Slider } from "@miblanchard/react-native-slider";
 import { useState, useEffect } from "react";
-
-import {
-  styles,
-  componentThumbStyles,
-  customStyles,
-} from "./TrainingScreen.styled";
+import { Settings } from "../../components/common/Settings";
+import { TrackMark } from "../../components/common/TrackMark";
+import { Layer } from "../../components/Layer";
 
 export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
   const [exerciseBtn, setExerciseBtn] = useState(false);
@@ -73,135 +67,58 @@ export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
     setBlockSwiper(!blockSwiper);
   };
 
-  const valueExercise = (e) => {
-    setExerciseTime(e);
-  };
-
-  const valuePause = (e) => {
-    setPause(e);
-  };
-  const valueRepeat = (e) => {
-    setRepeat(e);
-  };
-
-  const TrackMarkExercise = () => (
-    <View style={componentThumbStyles.container}>
-      <Text style={componentThumbStyles.text}>{exerciseTime}</Text>
-    </View>
-  );
-
-  const TrackMarkRepeat = () => (
-    <View style={{}}>
-      <Text style={componentThumbStyles.text}>{repeat}</Text>
-    </View>
-  );
-
-  const TrackMarkPause = () => (
-    <View style={componentThumbStyles.container}>
-      <Text style={componentThumbStyles.text}>{pause}</Text>
-    </View>
-  );
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Training</Text>
-      </View>
-      <View style={styles.main}>
-        <View style={styles.counter}>
-          <Text style={styles.counterText}>{time}s</Text>
-        </View>
+    <Layer
+      handleClick={handleClick}
+      isRunning={isRunning}
+      time={time}
+      titleLayer={"Training"}
+    >
+      {
+        <>
+          <Settings
+            stateBtn={!exerciseBtn}
+            titleCounter={"Time for exercise"}
+            counterValue={exerciseTime}
+            sliderChangeValue={setExerciseTime}
+            sliderTrackMark={() => <TrackMark>{exerciseTime}</TrackMark>}
+            sliderMaxValue={120}
+            sliderStep={1}
+            onPressSettings={onPressExercise}
+            iconSettings={
+              <Ionicons name="ios-timer-outline" size={24} color="black" />
+            }
+          />
 
-        <View style={styles.settings}>
-          {!exerciseBtn ? (
-            <>
-              <View style={styles.titleCounter}>
-                <Text style={styles.titleCounter}>Time for exercise</Text>
-              </View>
-              <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{exerciseTime}s</Text>
-              </View>
-            </>
-          ) : (
-            <Slider
-              containerStyle={componentThumbStyles.container}
-              value={exerciseTime}
-              onValueChange={valueExercise}
-              animateTransitions
-              renderThumbComponent={() => {}}
-              renderTrackMarkComponent={TrackMarkExercise}
-              trackStyle={customStyles.track}
-              maximumValue={120}
-              step={1}
-            />
-          )}
+          <Settings
+            stateBtn={!pauseBtn}
+            titleCounter={"Time for pause"}
+            counterValue={pause}
+            sliderChangeValue={setPause}
+            sliderTrackMark={() => <TrackMark>{pause}</TrackMark>}
+            sliderMaxValue={12}
+            sliderStep={1}
+            onPressSettings={onPressPause}
+            iconSettings={
+              <MaterialIcons name="timer" size={24} color="black" />
+            }
+          />
 
-          <Pressable style={styles.iconBtn} onPress={onPressExercise}>
-            <Ionicons name="ios-timer-outline" size={24} color="black" />
-          </Pressable>
-        </View>
-
-        <View style={styles.settings}>
-          {!pauseBtn ? (
-            <>
-              <View style={styles.titleCounter}>
-                <Text style={styles.titleCounter}>Pause time</Text>
-              </View>
-              <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{pause}s</Text>
-              </View>
-            </>
-          ) : (
-            <Slider
-              containerStyle={componentThumbStyles.container}
-              value={pause}
-              onValueChange={valuePause}
-              animateTransitions
-              renderThumbComponent={() => {}}
-              renderTrackMarkComponent={TrackMarkPause}
-              trackStyle={customStyles.track}
-              maximumValue={60}
-              step={1}
-            />
-          )}
-          <Pressable style={styles.iconBtn} onPress={onPressPause}>
-            <MaterialIcons name="timer" size={24} color="black" />
-          </Pressable>
-        </View>
-
-        <View style={styles.settings}>
-          {!repeatBtn ? (
-            <>
-              <View style={styles.titleCounter}>
-                <Text style={styles.titleCounter}>Repeat</Text>
-              </View>
-              <View style={styles.counterSettings}>
-                <Text style={styles.counterSettings}>{repeat}</Text>
-              </View>
-            </>
-          ) : (
-            <Slider
-              containerStyle={componentThumbStyles.container}
-              value={repeat}
-              onValueChange={valueRepeat}
-              animateTransitions
-              renderThumbComponent={() => {}}
-              renderTrackMarkComponent={TrackMarkRepeat}
-              trackStyle={customStyles.track}
-              maximumValue={13}
-              step={1}
-            />
-          )}
-          <Pressable style={styles.iconBtn} onPress={onPressRepeat}>
-            <Entypo name="back-in-time" size={24} color="black" />
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.startBtnContainer}>
-        <Button
-          label={isRunning ? "STOP" : "START"}
-          handleClick={handleClick}
-        />
-      </View>
-    </View>
+          <Settings
+            stateBtn={!repeatBtn}
+            titleCounter={"Repeat"}
+            counterValue={repeat}
+            sliderChangeValue={setRepeat}
+            sliderTrackMark={() => <TrackMark>{repeat}</TrackMark>}
+            sliderMaxValue={12}
+            sliderStep={1}
+            onPressSettings={onPressRepeat}
+            iconSettings={
+              <Entypo name="back-in-time" size={24} color="black" />
+            }
+          />
+        </>
+      }
+    </Layer>
   );
 }
