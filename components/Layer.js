@@ -23,6 +23,7 @@ export const Layer = ({
         <Button
           label={isRunning ? "STOP" : "START"}
           handleClick={handleClick}
+          isRunning={isRunning}
         />
       </View>
     </View>

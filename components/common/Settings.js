@@ -2,6 +2,7 @@ import { Text, View, Pressable, StyleSheet } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
 
 export const Settings = ({
+  activeTime,
   stateBtn,
   titleCounter,
   counterValue,
@@ -12,15 +13,18 @@ export const Settings = ({
   onPressSettings,
   iconSettings,
 }) => {
+  const { settings, titleCounterStyle, counterSettings, iconBtn } =
+    styles(activeTime);
+
   return (
-    <View style={styles.settings}>
+    <View style={settings}>
       {stateBtn ? (
         <>
-          <View style={styles.titleCounter}>
-            <Text style={styles.titleCounter}>{titleCounter}</Text>
+          <View style={titleCounterStyle}>
+            <Text style={titleCounterStyle}>{titleCounter}</Text>
           </View>
-          <View style={styles.counterSettings}>
-            <Text style={styles.counterSettings}>{counterValue}s</Text>
+          <View style={counterSettings}>
+            <Text style={counterSettings}>{counterValue}s</Text>
           </View>
         </>
       ) : (
@@ -38,7 +42,7 @@ export const Settings = ({
       )}
 
       <Pressable
-        style={styles.iconBtn}
+        style={iconBtn}
         // onPress={() => onPressSettings(titleCounter)}
         onPress={onPressSettings}
       >
@@ -48,27 +52,31 @@ export const Settings = ({
   );
 };
 
-const styles = StyleSheet.create({
-  settings: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginTop: 30,
-  },
-  titleCounter: {
-    flex: 1,
-  },
-  counterSettings: {
-    flex: 1,
-  },
-  iconBtn: {
-    width: 34,
-    height: 34,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    backgroundColor: "#c0c0c0",
-  },
-});
+const styles = (activeTime) =>
+  StyleSheet.create({
+    settings: {
+      backgroundColor: activeTime ? "#c2c2c2" : "#fff",
+      justifyContent: "space-between",
+      flexDirection: "row",
+      marginTop: 30,
+      padding: 2,
+      borderRadius: 10,
+    },
+    titleCounterStyle: {
+      flex: 1,
+    },
+    counterSettings: {
+      flex: 1,
+    },
+    iconBtn: {
+      width: 34,
+      height: 34,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 10,
+      backgroundColor: "#c0c0c0",
+    },
+  });
 
 const componentThumbStyles = StyleSheet.create({
   container: {

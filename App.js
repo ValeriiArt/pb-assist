@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import Swiper from "react-native-swiper";
 import PlayScreen from "./screens/PlayScreen";
-import TrainingScreen from "./screens/TrainingScreen/TrainingScreen";
+import TrainingScreen from "./screens/TrainingScreen";
 import VoiceAssistantScreen from "./screens/VoiceAssistantScreen";
 import { useState } from "react";
 
