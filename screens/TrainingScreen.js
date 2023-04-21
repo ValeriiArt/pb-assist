@@ -12,7 +12,7 @@ export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
   const [exerciseTime, setExerciseTime] = useState(0);
 
   const [pauseBtn, setPauseBtn] = useState(false);
-  const [pauseTime, setPause] = useState(0);
+  const [pauseTime, setPauseTime] = useState(0);
 
   const [repeatBtn, setRepeatBtn] = useState(false);
   const [repeat, setRepeat] = useState(0);
@@ -100,13 +100,13 @@ export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
 
   useEffect(() => {
     if (repeat === 0 && isRunning) {
-      reset();
+      resetCount();
     }
   }, [repeat]);
 
   const handleStartStop = () => {
     if (isRunning) {
-      reset();
+      resetAll();
     }
     if (repeat > 0 && pauseTime > 0 && exerciseTime > 0) {
       setIsRunning(true);
@@ -114,16 +114,23 @@ export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
     }
   };
 
-  const reset = () => {
+  const resetCount = () => {
+    setIsRunning(false);
+    setIsPause(true);
+    setTimeLeft(0);
+    setPauseTimeLeft(0);
+    soundPlayer.stop();
+  };
+  const resetAll = () => {
     setIsRunning(false);
     setIsPause(true);
     setExerciseTime(0);
-    setPause(0);
+    setPauseTime(0);
     setRepeat(0);
     // setTime(0);
     setTimeLeft(0);
     setPauseTimeLeft(0);
-    // soundPlayer.stop();
+    soundPlayer.stop();
   };
 
   const onPressExercise = () => {
@@ -177,7 +184,7 @@ export default function TrainingScreen({ setBlockSwiper, blockSwiper }) {
             stateBtn={!pauseBtn}
             titleCounter={"Time for pause"}
             counterValue={pauseTime}
-            sliderChangeValue={setPause}
+            sliderChangeValue={setPauseTime}
             sliderTrackMark={() => <TrackMark>{pauseTime}</TrackMark>}
             sliderMaxValue={12}
             sliderStep={1}

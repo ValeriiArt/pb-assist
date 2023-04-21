@@ -15,7 +15,7 @@ export const Layer = ({
       </View>
       <View style={styles.main}>
         <View style={styles.counter}>
-          <Text style={styles.counterText}>{time}s</Text>
+          <Text style={styles.counterText}>{time} s</Text>
         </View>
       </View>
       {children}

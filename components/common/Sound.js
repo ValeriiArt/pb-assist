@@ -5,16 +5,15 @@ export default function SoundPlayer() {
   const [sound, setSound] = useState(null);
 
   async function loadSound() {
-    console.log("Loading Sound");
-
+    // console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
-      require("../../assets/sounds/gudok.mov")
+      require("../../assets/sounds/gudok.mp3")
     );
     setSound(sound);
   }
 
-  async function unloadSound() {
-    console.log("Unloading Sound");
+  function unloadSound() {
+    // console.log("Unloading Sound");
     sound && sound?.unloadAsync();
   }
 
@@ -22,17 +21,17 @@ export default function SoundPlayer() {
     if (!sound) {
       await loadSound();
     }
-
-    console.log("Playing Sound");
-    await sound?.playAsync();
+    // console.log("Playing Sound");
+    await sound.playAsync();
   }
 
   async function stopSound() {
-    console.log("Stopping Sound");
+    // console.log("Stopping Sound");
     await sound?.stopAsync();
   }
 
   useEffect(() => {
+    // console.log("unload Sound");
     return () => unloadSound();
   }, []);
 

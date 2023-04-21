@@ -15,7 +15,7 @@ export const Settings = ({
 }) => {
   const { settings, titleCounterStyle, counterSettings, iconBtn } =
     styles(activeTime);
-
+  const valueAndSecond = <Text>{counterValue} s</Text>;
   return (
     <View style={settings}>
       {stateBtn ? (
@@ -24,7 +24,9 @@ export const Settings = ({
             <Text style={titleCounterStyle}>{titleCounter}</Text>
           </View>
           <View style={counterSettings}>
-            <Text style={counterSettings}>{counterValue}s</Text>
+            <Text style={counterSettings}>
+              {titleCounter === "Repeat" ? counterValue : valueAndSecond}
+            </Text>
           </View>
         </>
       ) : (
